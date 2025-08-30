@@ -1,13 +1,14 @@
 UNDERSTANDING THE MAKEFILE
+--------------------------
 
 General structure of a rule:
 
 target: dependencies
 <TAB> recipe/command
 
-target: is the file that you want to build (file1, file1.o, etc.)
-dependencies: the files required to build the target (like .c, .h, .o)
-recipe: the commands that are executed to create the target (THE MUST START WITH TAB)
+Target: Is the file that you want to build (file1, file1.o, etc.)
+Dependencies: The files required to build the target (like .c, .h, .o)
+Recipe: The commands that are executed to create the target (THEY MUST START WITH TAB)
 
 -----------------------------------------
 EXAMPLE

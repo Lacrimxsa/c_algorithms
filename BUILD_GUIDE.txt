@@ -1,0 +1,110 @@
+BUILD GUIDE – Euclides GCD Project
+==================================
+
+This guide explains the general concepts behind builds and debugging in C.
+
+1. Clean Build
+--------------
+When you compile, the compiler generates intermediate files:
+- Object files (.o) in the build/ directory
+- Executables in the bin/ directory
+- Coverage files (.gcda, .gcno) if coverage is enabled
+
+These files are called "build artifacts".
+
+A "clean build" means removing all artifacts and compiling again from scratch.
+Command:
+  make clean
+This ensures no old or corrupted files interfere with the build.
+
+2. Debug Build
+--------------
+A debug build is designed for development and debugging.
+
+Compiler flags:
+  -O0  (disable optimizations)
+  -g   (include debug symbols)
+
+Advantages:
+- Easier to step through the code with gdb.
+- Variables appear as in the source code.
+
+Disadvantages:
+- Slower execution.
+
+Command:
+  make debug
+
+3. Release Build
+----------------
+A release build is designed for production (what you deliver to users).
+
+Compiler flags:
+  -O2 or -O3 (enable optimizations)
+  -DNDEBUG   (often used to disable asserts)
+
+Advantages:
+- Runs faster, smaller binary.
+
+Disadvantages:
+- Harder to debug (optimizations reorder or remove code).
+
+Command:
+  make release
+
+4. Optimizations
+----------------
+Compiler optimizations (-O1, -O2, -O3) try to make the program faster:
+- Remove unused code
+- Inline functions
+- Reorder instructions
+- Strength reduction (replace expensive ops with cheaper ones)
+
+Optimized builds may not match the source line-by-line when debugging.
+
+5. Sanitizers
+-------------
+Sanitizers add runtime checks for errors like:
+- Buffer overflows
+- Use-after-free
+- Division by zero
+- Undefined behavior
+
+Command:
+  make asan
+Run the program and sanitizers will report issues.
+
+6. Valgrind
+-----------
+Valgrind is an external tool to detect memory errors and leaks.
+
+Command:
+  make run-valgrind ARGS="54 24"
+
+7. Coverage
+-----------
+Coverage tells you which lines of code executed during tests.
+
+Steps:
+  make coverage         (compile with instrumentation)
+  ./bin/im_the_exec 54 24
+  make report-coverage  (generate HTML report)
+
+Open coverage/index.html to see green (executed) and red (not executed) lines.
+
+8. Debugging with gdb
+---------------------
+gdb allows step-by-step debugging.
+
+Steps:
+  make debug
+  gdb ./bin/im_the_exec
+  (gdb) break gcd        # set a breakpoint at function gcd
+  (gdb) run 36 60        # run with input numbers
+  (gdb) next             # step line by line
+  (gdb) print a, b       # print variables
+  (gdb) bt               # backtrace of function calls
+
+The numbers (36 60, 54 24, 1071 462) are just examples of arguments.
+You can use any two integers.
+

@@ -1,0 +1,99 @@
+MAKEFILE EXPLAINED – Euclides GCD Project
+=========================================
+
+This document explains the structure of the Makefile in this project.
+
+General Rule Format
+-------------------
+target: dependencies
+    recipe
+
+- target: the file to build (e.g. program, file.o).
+- dependencies: files required to build the target (.c, .h).
+- recipe: commands executed (must start with TAB).
+
+Variables
+---------
+CC       = compiler (default gcc, can override with make CC=clang)
+CFLAGS   = compiler options (warnings, debug, optimization)
+CPPFLAGS = preprocessor flags (e.g. -I include paths)
+LDFLAGS  = linker flags
+LDLIBS   = libraries for the linker
+
+SRC      = source files (.c)
+OBJ      = object files (.o)
+TARGET   = final executable
+
+Default Target
+--------------
+all: debug
+
+By default, running 'make' will build the debug version.
+
+Build Profiles
+--------------
+debug:
+  Uses CFLAGS_DEBUG = -O0 -g -Wall -Wextra -Wpedantic
+  Suitable for debugging with gdb.
+
+release:
+  Uses CFLAGS_RELEASE = -O2 -Wall -Wextra -Wpedantic
+  Suitable for fast production builds.
+
+asan:
+  Uses sanitizers:
+    -fsanitize=address,undefined
+  Useful for finding memory bugs and undefined behavior.
+
+Pattern Rules
+-------------
+$(BUILD_DIR)/%.o: %.c
+    $(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+This compiles any .c file into its corresponding .o file in the build/ directory.
+
+Link Rule
+---------
+$(TARGET): $(OBJ)
+    $(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
+
+This links all object files into the final executable in bin/.
+
+Run Targets
+-----------
+make run ARGS="54 24"
+  Runs the program with arguments.
+
+make run-valgrind ARGS="54 24"
+  Runs the program under Valgrind.
+
+Coverage Targets
+----------------
+make coverage
+  Compiles with --coverage flags.
+
+make report-coverage
+  Generates HTML report in coverage/index.html (requires lcov/genhtml).
+
+Utility Targets
+---------------
+make cc-gcc
+  Builds with gcc explicitly.
+
+make cc-clang
+  Builds with clang explicitly.
+
+make clean
+  Removes object files and coverage files.
+
+make distclean
+  Removes everything, including bin/ and coverage/.
+
+Notes
+-----
+- $< = first dependency
+- $@ = target
+- $^ = all dependencies
+- Directories build/ and bin/ are created automatically.
+- Use make -n to see what commands would be run without executing them.
+
